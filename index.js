@@ -3,6 +3,7 @@ const inquirer = require("inquirer");
 const Department = require("./lib/department");
 const Role = require("./lib/role");
 const Employee = require("./lib/employee");
+const { db, viewDepartment, viewRole, viewEmployee } = require("./server");
 
 async function mainMenu() {
   return inquirer.prompt([
@@ -25,17 +26,19 @@ async function mainMenu() {
 }
 
 async function init() {
-  const menu = await mainMenu();
-
   let showMenu = true;
 
   while (showMenu) {
+    const menu = await mainMenu();
     switch (menu.options) {
       case "View all departments":
+        viewDepartment();
         break;
       case "View all roles":
+        viewRole();
         break;
       case "View all employees":
+        viewEmployee();
         break;
       case "Add a department":
         break;

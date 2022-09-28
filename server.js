@@ -1,13 +1,45 @@
-const express = require("express");
-const sequelize = require("./config/connection");
 const mysql = require("mysql2");
+require("dotenv").config();
 
-const PORT = process.env.PORT || 3001;
-const app = express();
+export const db = mysql.createConnection(
+  {
+    host: "localhost",
+    user: process.env.DB_NAME,
+    password: process.env.DB_USER,
+    database: process.env.DB_PASSWORD,
+  },
+  console.log(`Connected to the company_db database.`)
+);
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+export function viewDepartment() {
+  const sql = `SELECT * FROM department`;
+  db.query(sql, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      console.log(result);
+    }
+  });
+}
 
-sequelize.sync().then(() => {
-  app.listen(PORT, () => console.log("Now listening"));
-});
+export function viewRole() {
+  const sql = `SELECT * FROM role`;
+  db.query(sql, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
+export function viewEmployee() {
+  const sql = `SELECT * FROM employee`;
+  db.query(sql, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      console.log(result);
+    }
+  });
+}
