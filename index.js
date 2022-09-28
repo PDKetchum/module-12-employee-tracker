@@ -9,6 +9,8 @@ const {
   viewEmployee,
   addDepartment,
   addRole,
+  addEmployee,
+  getAllEmployees,
 } = require("./server");
 
 async function mainMenu() {
@@ -50,7 +52,7 @@ async function promptForRole() {
     .prompt([
       {
         type: "input",
-        name: "title",
+        name: "name",
         message: "Enter the title",
       },
       {
@@ -69,6 +71,70 @@ async function promptForRole() {
     });
 }
 
+async function promptForEmployee() {
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "Enter first name",
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "Enter last name",
+      },
+      {
+        type: "input",
+        name: "role_id",
+        message: "Enter the role ID",
+      },
+      {
+        type: "input",
+        name: "manager_id",
+        message: "Enter the manager ID (null if no manager)",
+      },
+    ])
+    .then((answer) => {
+      return new Employee(
+        null,
+        answer.first_name,
+        answer.last_name,
+        answer.role_id,
+        answer.manager_id
+      );
+    });
+}
+
+async function promptForNewEmployeeRole() {
+  const employees = getAllEmployees();
+  const employeeNames = employees.map((employee) => {
+    return `${employee.first_name} ${employee.last_name}`;
+  });
+
+  return inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "name",
+        message: "Select Employee",
+        choices: employeeNames,
+      },
+      {
+        type: "input",
+        name: "role_id",
+        message: "Enter the new role ID",
+      },
+      {
+        type: "input",
+        name: "manager_id",
+        message: "Enter the new manager ID (null if no manager)",
+      },
+    ])
+    .then((answer) => {
+      return new Employee(answer.id, answer.role_id, answer.manager_id);
+    });
+}
 async function init() {
   let showMenu = true;
 
@@ -83,7 +149,7 @@ async function init() {
         viewRole();
         break;
       case "View all employees":
-        viewEmployee();
+        getAllEmployees("view");
         break;
       case "Add a department":
         const department = promptForDepartment();
@@ -94,8 +160,12 @@ async function init() {
         addRole(role);
         break;
       case "Add an employee":
+        const employee = promptForEmployee();
+        addEmployee(employee);
         break;
       case "Update an employee role":
+        const newRole = promptForNewEmployeeRole();
+        addNewEmployeeRole(newRole);
         break;
       default:
         showMenu = false;

@@ -69,10 +69,44 @@ function addRole(role) {
   });
 }
 
+function addEmployee(employee) {
+  const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
+  const params = [
+    employee.first_name,
+    employee.last_name,
+    employee.role_id,
+    employee.manager_id,
+  ];
+  db.query(sql, params, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
+function getAllEmployees(mode) {
+  const sql1 = `SELECT * FROM employee`;
+  db.query(sql1, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      if (mode === "view") {
+        printTable(result);
+      } else {
+        return result;
+      }
+    }
+  });
+}
+
 module.exports = {
   viewDepartment,
   viewRole,
   viewEmployee,
   addDepartment,
   addRole,
+  addEmployee,
+  getAllEmployees,
 };
