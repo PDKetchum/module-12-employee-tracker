@@ -12,35 +12,32 @@ const db = mysql.createConnection(
   console.log(`Connected to the company_db database.`)
 );
 
-function viewDepartment() {
+function getAllDepartments() {
   const sql = `SELECT * FROM department`;
   db.query(sql, (error, result) => {
     if (error) {
       console.log(error.message);
     } else {
-      printTable(result);
+      if (mode === "view") {
+        printTable(result);
+      } else {
+        return result;
+      }
     }
   });
 }
 
-function viewRole() {
+function getAllRoles(mode) {
   const sql = `SELECT * FROM role`;
   db.query(sql, (error, result) => {
     if (error) {
       console.log(error.message);
     } else {
-      printTable(result);
-    }
-  });
-}
-
-function viewEmployee() {
-  const sql = `SELECT * FROM employee`;
-  db.query(sql, (error, result) => {
-    if (error) {
-      console.log(error.message);
-    } else {
-      printTable(result);
+      if (mode === "view") {
+        printTable(result);
+      } else {
+        return result;
+      }
     }
   });
 }
@@ -87,8 +84,8 @@ function addEmployee(employee) {
 }
 
 function getAllEmployees(mode) {
-  const sql1 = `SELECT * FROM employee`;
-  db.query(sql1, (error, result) => {
+  const sql = `SELECT * FROM employee`;
+  db.query(sql, (error, result) => {
     if (error) {
       console.log(error.message);
     } else {
@@ -101,12 +98,24 @@ function getAllEmployees(mode) {
   });
 }
 
+function updateEmployeeRole(employee) {
+  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+  const params = [employee.role_id, employee.employee_id];
+  db.query(sql, params, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
 module.exports = {
-  viewDepartment,
-  viewRole,
-  viewEmployee,
+  getAllDepartments,
+  getAllRoles,
   addDepartment,
   addRole,
   addEmployee,
   getAllEmployees,
+  updateEmployeeRole,
 };

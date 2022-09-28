@@ -5,12 +5,13 @@ const Role = require("./lib/role");
 const Employee = require("./lib/employee");
 const {
   viewDepartment,
-  viewRole,
-  viewEmployee,
+  getAllRoles,
   addDepartment,
   addRole,
   addEmployee,
   getAllEmployees,
+  updateEmployeeRole,
+  getAllDepartments,
 } = require("./server");
 
 async function mainMenu() {
@@ -48,6 +49,14 @@ async function promptForDepartment() {
 }
 
 async function promptForRole() {
+  const departments = getAllDepartments();
+  const departmentNames = departments.map((departments) => {
+    const departmentsInfo = {
+      name: departments.name,
+      value: departments.id,
+    };
+    return departmentsInfo;
+  });
   return inquirer
     .prompt([
       {
@@ -63,7 +72,7 @@ async function promptForRole() {
       {
         type: "input",
         name: "department_id",
-        message: "Enter the department ID",
+        message: departmentNames,
       },
     ])
     .then((answer) => {
@@ -72,6 +81,14 @@ async function promptForRole() {
 }
 
 async function promptForEmployee() {
+  const roles = getAllRoles();
+  const roleTitles = roles.map((roles) => {
+    const roleInfo = {
+      name: roles.title,
+      value: roles.id,
+    };
+    return roleInfo;
+  });
   return inquirer
     .prompt([
       {
@@ -85,9 +102,10 @@ async function promptForEmployee() {
         message: "Enter last name",
       },
       {
-        type: "input",
+        type: "list",
         name: "role_id",
-        message: "Enter the role ID",
+        message: "Select the role",
+        choices: roleTitles,
       },
       {
         type: "input",
@@ -108,31 +126,41 @@ async function promptForEmployee() {
 
 async function promptForNewEmployeeRole() {
   const employees = getAllEmployees();
-  const employeeNames = employees.map((employee) => {
-    return `${employee.first_name} ${employee.last_name}`;
+  const employeeNames = employees.map((employees) => {
+    const employeeInfo = {
+      name: `${employees.first_name} ${employees.last_name}`,
+      value: employees.id,
+    };
+    return employeeInfo;
+  });
+
+  const roles = getAllRoles();
+  const roleTitles = roles.map((roles) => {
+    const roleInfo = {
+      name: roles.title,
+      value: roles.id,
+    };
+    return roleInfo;
   });
 
   return inquirer
     .prompt([
       {
         type: "list",
-        name: "name",
+        name: "employee_id",
         message: "Select Employee",
         choices: employeeNames,
       },
       {
-        type: "input",
+        type: "list",
         name: "role_id",
-        message: "Enter the new role ID",
-      },
-      {
-        type: "input",
-        name: "manager_id",
-        message: "Enter the new manager ID (null if no manager)",
+        message: "Select new role",
+        choices: roleTitles,
       },
     ])
     .then((answer) => {
-      return new Employee(answer.id, answer.role_id, answer.manager_id);
+      const employee = answer;
+      updateEmployeeRole(employee);
     });
 }
 async function init() {
@@ -143,28 +171,28 @@ async function init() {
 
     switch (menu.options) {
       case "View all departments":
-        viewDepartment();
+        getAllDepartments("view");
         break;
       case "View all roles":
-        viewRole();
+        getAllRoles("view");
         break;
       case "View all employees":
         getAllEmployees("view");
         break;
       case "Add a department":
-        const department = promptForDepartment();
+        const department = await promptForDepartment();
         addDepartment(department);
         break;
       case "Add a role":
-        const role = promptForRole();
+        const role = await promptForRole();
         addRole(role);
         break;
       case "Add an employee":
-        const employee = promptForEmployee();
+        const employee = await promptForEmployee();
         addEmployee(employee);
         break;
       case "Update an employee role":
-        const newRole = promptForNewEmployeeRole();
+        const newRole = await promptForNewEmployeeRole();
         addNewEmployeeRole(newRole);
         break;
       default:
