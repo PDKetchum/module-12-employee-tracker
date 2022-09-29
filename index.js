@@ -49,10 +49,10 @@ async function promptForDepartment() {
 
 async function promptForRole() {
   const departments = getAllDepartments();
-  const departmentNames = departments.map((departments) => {
+  const departmentNames = departments.map((department) => {
     const departmentsInfo = {
-      name: departments.name,
-      value: departments.id,
+      name: department.name,
+      value: department.id,
     };
     return departmentsInfo;
   });
@@ -69,9 +69,10 @@ async function promptForRole() {
         message: "Enter the salary",
       },
       {
-        type: "input",
+        type: "list",
         name: "department_id",
-        message: departmentNames,
+        message: "Select a department",
+        choices: departmentNames,
       },
     ])
     .then((answer) => {
