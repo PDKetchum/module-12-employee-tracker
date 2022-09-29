@@ -12,7 +12,7 @@ const db = mysql.createConnection(
   console.log(`Connected to the company_db database.`)
 );
 
-function getAllDepartments() {
+function getAllDepartments(mode) {
   const sql = `SELECT * FROM department`;
   db.query(sql, (error, result) => {
     if (error) {

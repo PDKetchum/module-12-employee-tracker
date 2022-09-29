@@ -4,9 +4,8 @@ const Department = require("./lib/department");
 const Role = require("./lib/role");
 const Employee = require("./lib/employee");
 const {
-  viewDepartment,
-  getAllRoles,
   addDepartment,
+  getAllRoles,
   addRole,
   addEmployee,
   getAllEmployees,
