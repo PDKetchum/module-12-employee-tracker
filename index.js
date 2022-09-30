@@ -11,6 +11,7 @@ const {
   getAllEmployees,
   updateEmployeeRole,
   getAllDepartments,
+  getAllManagers,
 } = require("./server");
 
 async function mainMenu() {
@@ -48,7 +49,7 @@ async function promptForDepartment() {
 }
 
 async function promptForRole() {
-  const departments = getAllDepartments();
+  const departments = await getAllDepartments();
   const departmentNames = departments.map((department) => {
     const departmentsInfo = {
       name: department.name,
@@ -60,7 +61,7 @@ async function promptForRole() {
     .prompt([
       {
         type: "input",
-        name: "name",
+        name: "title",
         message: "Enter the title",
       },
       {
@@ -76,19 +77,29 @@ async function promptForRole() {
       },
     ])
     .then((answer) => {
-      return new Role(null, answer.title, answer.salary, answer.department_id);
+      return new Role(answer.title, answer.salary, answer.department_id);
     });
 }
 
 async function promptForEmployee() {
-  const roles = getAllRoles();
-  const roleTitles = roles.map((roles) => {
+  const roles = await getAllRoles();
+  const roleTitles = roles.map((role) => {
     const roleInfo = {
-      name: roles.title,
-      value: roles.id,
+      name: role.title,
+      value: role.id,
     };
     return roleInfo;
   });
+
+  const managers = await getAllManagers();
+  const managerInfo = managers.map((manager) => {
+    const roleInfo = {
+      name: `${manager.first_name} ${manager.last_name}`,
+      value: manager.id,
+    };
+    return roleInfo;
+  });
+
   return inquirer
     .prompt([
       {
@@ -108,14 +119,14 @@ async function promptForEmployee() {
         choices: roleTitles,
       },
       {
-        type: "input",
+        type: "list",
         name: "manager_id",
-        message: "Enter the manager ID (null if no manager)",
+        message: "Select a manager",
+        choices: managerInfo,
       },
     ])
     .then((answer) => {
       return new Employee(
-        null,
         answer.first_name,
         answer.last_name,
         answer.role_id,
@@ -125,11 +136,11 @@ async function promptForEmployee() {
 }
 
 async function promptForNewEmployeeRole() {
-  const employees = getAllEmployees();
-  const employeeNames = employees.map((employees) => {
+  const employees = await getAllEmployees();
+  const employeeNames = employees.map((employee) => {
     const employeeInfo = {
-      name: `${employees.first_name} ${employees.last_name}`,
-      value: employees.id,
+      name: `${employee.first_name} ${employee.last_name}`,
+      value: employee.id,
     };
     return employeeInfo;
   });
