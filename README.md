@@ -15,8 +15,9 @@ In terminal
 
 1. Create `.env` file and enter mysql credentials with `DB_NAME` set as "`company_db`"
 2. `npm install`
-3. `node index.js`
-4. Answer prompts
+3. Connect to database with `mysql -u root -p`
+4. `npm start`
+5. Answer prompts
 
 GitHub URL: https://github.com/PDKetchum/module-12-employee-tracker
 

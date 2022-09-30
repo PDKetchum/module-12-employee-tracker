@@ -110,16 +110,14 @@ function addEmployee(employee) {
 }
 
 function updateEmployeeRole(employee) {
-  return new Promise((res, rej) => {
-    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-    const params = [employee.role_id, employee.employee_id];
-    db.query(sql, params, (error, result) => {
-      if (error) {
-        rej(error.message);
-      } else {
-        res(result);
-      }
-    });
+  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+  const params = [employee.role_id, employee.id];
+  db.query(sql, params, (error, result) => {
+    if (error) {
+      console.log(error.message);
+    } else {
+      console.log(result);
+    }
   });
 }
 

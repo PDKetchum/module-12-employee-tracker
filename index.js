@@ -145,10 +145,10 @@ async function promptForNewEmployeeRole() {
   });
 
   const roles = await getAllRoles();
-  const roleTitles = roles.map((roles) => {
+  const roleTitles = roles.map((role) => {
     const roleInfo = {
-      name: roles.title,
-      value: roles.id,
+      name: role.title,
+      value: role.id,
     };
     return roleInfo;
   });
@@ -157,7 +157,7 @@ async function promptForNewEmployeeRole() {
     .prompt([
       {
         type: "list",
-        name: "employee_id",
+        name: "id",
         message: "Select Employee",
         choices: employeeNames,
       },
@@ -169,8 +169,9 @@ async function promptForNewEmployeeRole() {
       },
     ])
     .then((answer) => {
-      const employee = answer;
-      updateEmployeeRole(employee);
+      const newRole = { role_id: answer.role_id, id: answer.id };
+      console.log(newRole);
+      return newRole;
     });
 }
 async function init() {
@@ -203,7 +204,7 @@ async function init() {
         break;
       case "Update an employee role":
         const newRole = await promptForNewEmployeeRole();
-        addNewEmployeeRole(newRole);
+        updateEmployeeRole(newRole);
         break;
       default:
         showMenu = false;
