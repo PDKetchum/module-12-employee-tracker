@@ -21,6 +21,8 @@ In terminal
 
 GitHub URL: https://github.com/PDKetchum/module-12-employee-tracker
 
+Walk-through video: https://drive.google.com/file/d/1oKFxZ9wTexd2brGR6D4gd9XXjaYTPeUd/view?usp=sharing
+
 ## Credits:
 
 ![](screenshot.png)
