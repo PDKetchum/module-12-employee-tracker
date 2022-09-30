@@ -60,22 +60,13 @@ function getAllEmployees(mode) {
   });
 }
 
-function getAllManagers(mode) {
-  return new Promise((res, rej) => {
-    const sql = `SELECT * FROM employee WHERE manager_id = null`;
-    db.query(sql, (error, result) => {
-      if (error) {
-        rej(error.message);
-      } else {
-        if (mode === "view") {
-          printTable(result);
-        } else {
-          res(result);
-        }
-      }
-    });
-  });
-}
+// getAllManagers()
+//   .then((result) => {
+//     console.log(result);
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//   });
 
 function addDepartment(department) {
   const sql = `INSERT INTO department (name) VALUES (?)`;
@@ -119,21 +110,22 @@ function addEmployee(employee) {
 }
 
 function updateEmployeeRole(employee) {
-  const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-  const params = [employee.role_id, employee.employee_id];
-  db.query(sql, params, (error, result) => {
-    if (error) {
-      console.log(error.message);
-    } else {
-      console.log(result);
-    }
+  return new Promise((res, rej) => {
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+    const params = [employee.role_id, employee.employee_id];
+    db.query(sql, params, (error, result) => {
+      if (error) {
+        rej(error.message);
+      } else {
+        res(result);
+      }
+    });
   });
 }
 
 module.exports = {
   getAllDepartments,
   getAllRoles,
-  getAllManagers,
   addDepartment,
   addRole,
   addEmployee,

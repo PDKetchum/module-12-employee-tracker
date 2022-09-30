@@ -11,7 +11,6 @@ const {
   getAllEmployees,
   updateEmployeeRole,
   getAllDepartments,
-  getAllManagers,
 } = require("./server");
 
 async function mainMenu() {
@@ -91,13 +90,13 @@ async function promptForEmployee() {
     return roleInfo;
   });
 
-  const managers = await getAllManagers();
-  const managerInfo = managers.map((manager) => {
-    const roleInfo = {
-      name: `${manager.first_name} ${manager.last_name}`,
-      value: manager.id,
+  const employees = await getAllEmployees();
+  const employeeNames = employees.map((employee) => {
+    const employeeInfo = {
+      name: `${employee.first_name} ${employee.last_name}`,
+      value: employee.id,
     };
-    return roleInfo;
+    return employeeInfo;
   });
 
   return inquirer
@@ -122,7 +121,7 @@ async function promptForEmployee() {
         type: "list",
         name: "manager_id",
         message: "Select a manager",
-        choices: managerInfo,
+        choices: employeeNames,
       },
     ])
     .then((answer) => {
@@ -145,7 +144,7 @@ async function promptForNewEmployeeRole() {
     return employeeInfo;
   });
 
-  const roles = getAllRoles();
+  const roles = await getAllRoles();
   const roleTitles = roles.map((roles) => {
     const roleInfo = {
       name: roles.title,
